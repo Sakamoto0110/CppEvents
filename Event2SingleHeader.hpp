@@ -31,7 +31,7 @@ private:
         MemberCallback = 0,
         StaticCallback = 1
     };
-    
+
     using MemberCallback_t = void(_T::*)(void*, EventArgs*);
     using StaticCallback_t = void(*)(void*, EventArgs*);
 
@@ -59,14 +59,7 @@ public:
         case StaticCallback: return (*s_ptf)(_sender, _args);
         case MemberCallback: return (hInstance->*m_ptmf)(_sender, _args);
         }
-    }
-
-    int Dump() override {
-        switch (GetCallbackType()) {
-        case StaticCallback: return (int)(s_ptf);
-        case MemberCallback: return (int)(&m_ptmf);
-        }
-    }
+    }    
 
     bool operator ==(IEventCallback* other) override {
         EventCallback* otherEventCallback = (EventCallback< _T>*)other;
@@ -80,9 +73,16 @@ public:
 
     }
 
+    int Dump() override {
+        switch (GetCallbackType()) {
+        case StaticCallback: return (int)(s_ptf);
+        case MemberCallback: return (int)(&m_ptmf);
+        }
+    }
+
 };
 
-template<class EventArgs, int MAX_CALLBACK_COUNT = 256>
+constexpr int MAX_CALLBACK_COUNT = 256;
 class Event {
 public:
     Event() { }
